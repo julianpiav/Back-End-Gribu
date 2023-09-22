@@ -28,8 +28,8 @@ public class UserService{
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
-    public UserDTO login(String user, String password){
-        User correctUser= userRepository.findByUserAndPassword(user,password);
+    public UserDTO login(String username, String password){
+        User correctUser= userRepository.findByUsernameAndPassword(username,password);
         return new UserDTO(correctUser.getEmail(),correctUser.getName(),
                 correctUser.getUsername(),correctUser.getLevel(),
                 correctUser.getDayStreak(),correctUser.getAlliance(),correctUser.getUserRole());

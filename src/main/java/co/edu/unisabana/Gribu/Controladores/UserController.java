@@ -26,7 +26,7 @@ public class UserController {
         return userService.getUser(Id);
     }
 
-    @PostMapping(path = "/update")
+    @PostMapping(path = "/save")
     public User SaveOrDelete(@RequestBody User user) {
         userService.SaveOrDelete(user);
         return user;
