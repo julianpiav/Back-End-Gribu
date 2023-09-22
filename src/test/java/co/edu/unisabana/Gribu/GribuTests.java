@@ -1,10 +1,10 @@
-package co.edu.unisabana.UsuariosYContenido;
+package co.edu.unisabana.Gribu;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class UsuariosYContenidoApplicationTests {
+class GribuTests {
 
 	@Test
 	void contextLoads() {
