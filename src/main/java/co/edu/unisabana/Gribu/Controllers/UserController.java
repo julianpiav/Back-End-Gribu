@@ -1,8 +1,8 @@
-package co.edu.unisabana.Gribu.Controladores;
+package co.edu.unisabana.Gribu.Controllers;
 
-import co.edu.unisabana.Gribu.Servicios.UserDTO;
-import co.edu.unisabana.Gribu.Servicios.UserService;
-import co.edu.unisabana.Gribu.Entidades.User;
+import co.edu.unisabana.Gribu.Services.UserDTO;
+import co.edu.unisabana.Gribu.Services.UserService;
+import co.edu.unisabana.Gribu.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +27,8 @@ public class UserController {
     }
 
     @PostMapping(path = "/save")
-    public User SaveOrDelete(@RequestBody User user) {
-        userService.SaveOrDelete(user);
+    public User SaveOrUpdate(@RequestBody User user) {
+        userService.SaveOrUpdate(user);
         return user;
     }
     @PostMapping(path = "/login")

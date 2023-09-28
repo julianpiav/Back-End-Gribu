@@ -1,7 +1,7 @@
-package co.edu.unisabana.Gribu.Servicios;
+package co.edu.unisabana.Gribu.Services;
 
-import co.edu.unisabana.Gribu.Repositorios.UserRepository;
-import co.edu.unisabana.Gribu.Entidades.User;
+import co.edu.unisabana.Gribu.Repositories.UserRepository;
+import co.edu.unisabana.Gribu.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class UserService{
         return userRepository.findById(id);
     }
 
-    public void SaveOrDelete(User user) {
+    public void SaveOrUpdate(User user) {
         userRepository.save(user);
     }
 

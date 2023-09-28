@@ -1,6 +1,6 @@
-package co.edu.unisabana.Gribu.Repositorios;
+package co.edu.unisabana.Gribu.Repositories;
 
-import co.edu.unisabana.Gribu.Entidades.User;
+import co.edu.unisabana.Gribu.Entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
