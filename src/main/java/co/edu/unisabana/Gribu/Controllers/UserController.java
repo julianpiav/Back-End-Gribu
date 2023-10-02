@@ -1,11 +1,13 @@
 package co.edu.unisabana.Gribu.Controllers;
 
+import co.edu.unisabana.Gribu.Entities.UserRole;
 import co.edu.unisabana.Gribu.Services.UserDTO;
 import co.edu.unisabana.Gribu.Services.UserService;
 import co.edu.unisabana.Gribu.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +28,12 @@ public class UserController {
         return userService.getUser(Id);
     }
 
-    @PostMapping(path = "/save")
+    @PostMapping(path = "/register")
     public User SaveOrUpdate(@RequestBody User user) {
+        user.setUserRole(UserRole.USER);
+        user.setCreationDate(LocalDate.now());
+        user.setUpdateDate(LocalDate.now());
+        user.setLevel(1);
         userService.SaveOrUpdate(user);
         return user;
     }
