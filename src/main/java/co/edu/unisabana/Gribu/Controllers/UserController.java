@@ -1,5 +1,6 @@
 package co.edu.unisabana.Gribu.Controllers;
 
+import co.edu.unisabana.Gribu.DTO.UserDTO;
 import co.edu.unisabana.Gribu.Entities.User;
 import co.edu.unisabana.Gribu.Entities.UserRole;
 import co.edu.unisabana.Gribu.Exceptions.AuthenticationException;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -23,7 +23,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(path = "/all")
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<UserDTO>> getUsers() {
         if (userService.getUsers().isEmpty()){
             throw new ResourceNotFoundException("No se Encontraron Usuarios");
         }
@@ -31,10 +31,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/{Id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable("Id") Long Id) {
-        if (userService.getUserByID(Id).isEmpty()){
-            throw new ResourceNotFoundException("Usuario no encontrado con ese id");
-        }
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("Id") Long Id) {
         return new ResponseEntity<>(userService.getUserByID(Id),HttpStatus.OK);
     }
 
@@ -66,11 +63,7 @@ public class UserController {
 
     @DeleteMapping("/delete/{Id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("Id") Long Id) {
-        if (userService.getUserByID(Id).isEmpty()){
-            throw new ResourceNotFoundException("Usuario no encontrado con ese id");
-        }
         userService.deleteUser(Id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }
