@@ -1,11 +1,17 @@
 package co.edu.unisabana.Gribu.Entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "lesson_user")
 public class LessonUser {
@@ -22,7 +28,7 @@ public class LessonUser {
     private Lesson lesson;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private ZonedDateTime date;
 
     @Column(name = "score")
     private int score;

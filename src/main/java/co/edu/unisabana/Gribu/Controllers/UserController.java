@@ -1,15 +1,19 @@
 package co.edu.unisabana.Gribu.Controllers;
 
-import co.edu.unisabana.Gribu.Entities.UserRole;
-import co.edu.unisabana.Gribu.Services.UserDTO;
-import co.edu.unisabana.Gribu.Services.UserService;
+import co.edu.unisabana.Gribu.DTO.UserDTO;
 import co.edu.unisabana.Gribu.Entities.User;
+import co.edu.unisabana.Gribu.Entities.UserRole;
+import co.edu.unisabana.Gribu.Exceptions.AuthenticationException;
+import co.edu.unisabana.Gribu.Exceptions.ExistingUserException;
+import co.edu.unisabana.Gribu.Exceptions.ResourceNotFoundException;
+import co.edu.unisabana.Gribu.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -19,33 +23,47 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(path = "/all")
-    public List<User> getUsers() {
-        return userService.getUsers();
+    public ResponseEntity<List<UserDTO>> getUsers() {
+        if (userService.getUsers().isEmpty()){
+            throw new ResourceNotFoundException("No se Encontraron Usuarios");
+        }
+        return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{Id}")
-    public Optional<User> getUser(@PathVariable("Id") Long Id) {
-        return userService.getUser(Id);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("Id") Long Id) {
+        return new ResponseEntity<>(userService.getUserByID(Id),HttpStatus.OK);
     }
 
     @PostMapping(path = "/register")
-    public User SaveOrUpdate(@RequestBody User user) {
-        user.setUserRole(UserRole.USER);
-        user.setCreationDate(LocalDate.now());
-        user.setUpdateDate(LocalDate.now());
-        user.setLevel(1);
-        userService.SaveOrUpdate(user);
-        return user;
+    public ResponseEntity<String> saveUser(@RequestBody User user) {
+        if (userService.userExistByEmail(user.getEmail())) {
+            throw  new ExistingUserException("El email que intenta utilizar, ya esta en Uso");
+        }else if (userService.userExistByUsername(user.getUsername())){
+            throw  new ExistingUserException("El Usuario que intenta utilizar, ya esta en Uso");
+        }else{
+            user.setUserRole(UserRole.USER);
+            user.setCreationDate(ZonedDateTime.now());
+            user.setUpdateDate(ZonedDateTime.now());
+            user.setLevel(1);
+            userService.SaveOrUpdateUser(user);
+            return new ResponseEntity<>("Usuario registrado con Exito", HttpStatus.CREATED);
+        }
     }
+
     @PostMapping(path = "/login")
-    public UserDTO login(@RequestBody User user) {
-        return userService.login(user.getUsername(),user.getPassword());
+    public ResponseEntity<String> login(@RequestBody User user) {
+        if (userService.login(user.getUsername(), user.getPassword())){
+            return new ResponseEntity<>("Inicio de Sesión Exitoso", HttpStatus.OK);
+        }else {
+            throw new AuthenticationException("Inicio de sesion fallido, verifique las credenciales");
+        }
 
     }
 
     @DeleteMapping("/delete/{Id}")
-    public void deleteUser(@PathVariable("Id") Long Id) {
-        userService.delete(Id);
+    public ResponseEntity<Void> deleteUser(@PathVariable("Id") Long Id) {
+        userService.deleteUser(Id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

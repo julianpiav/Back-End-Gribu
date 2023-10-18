@@ -1,10 +1,17 @@
 package co.edu.unisabana.Gribu.Entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.List;
-@Data
+import java.util.Objects;
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "labels")
 public class Label {
@@ -16,5 +23,7 @@ public class Label {
     private String name;
 
     @ManyToMany(mappedBy = "labels")
+    @ToString.Exclude
     private List<Lesson> lessons;
+
 }

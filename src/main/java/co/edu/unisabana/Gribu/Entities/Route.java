@@ -1,11 +1,17 @@
 package co.edu.unisabana.Gribu.Entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.List;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "routes")
 public class Route {
@@ -17,5 +23,6 @@ public class Route {
     private String name;
 
     @ManyToMany(mappedBy = "routes")
+    @ToString.Exclude
     private List<Lesson> lessons;
 }

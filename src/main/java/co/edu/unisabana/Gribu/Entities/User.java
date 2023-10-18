@@ -1,20 +1,27 @@
 package co.edu.unisabana.Gribu.Entities;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
-import java.time.LocalDate;
+
+import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
 @Table(name = "users")
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Email
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -27,17 +34,16 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
     private int level;
 
     @Column(name = "day_streak")
     private int dayStreak;
 
     @Column(name = "creation_date",nullable = false)
-    private LocalDate creationDate;
+    private ZonedDateTime creationDate;
 
     @Column(name = "upadate_date",nullable = false)
-    private LocalDate updateDate;
+    private ZonedDateTime updateDate;
 
     private String alliance;
 
@@ -45,6 +51,6 @@ public class User {
     private UserRole userRole;
 
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private Set<LessonUser> lessonUsers;
-
 }
