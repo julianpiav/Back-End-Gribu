@@ -1,5 +1,6 @@
 package co.edu.unisabana.Gribu.Services;
 
+import co.edu.unisabana.Gribu.DTO.UserRequest;
 import co.edu.unisabana.Gribu.Repositories.UserRepository;
 import co.edu.unisabana.Gribu.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,25 +18,26 @@ public class UserService{
         return userRepository.findAll();
     }
 
-    public Optional<User> getUser(Long id) {
+    public Optional<User> getUserByID(Long id){
         return userRepository.findById(id);
     }
-
-    public void SaveOrUpdate(User user) {
+    public void SaveOrUpdateUser(User user) {
         userRepository.save(user);
     }
 
-    public void delete(Long id) {
+    public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
-    public UserDTO login(String username, String password){
-        User correctUser= userRepository.findByUsernameAndPassword(username,password);
-        try{
-            return new UserDTO(correctUser.getEmail(),correctUser.getName(),
-                    correctUser.getUsername(),correctUser.getLevel(),
-                    correctUser.getDayStreak(),correctUser.getAlliance(),correctUser.getUserRole());
-        }catch (Exception e){
-            return null;
-        }
+    public Boolean login(String username, String password){
+        User user= userRepository.findByUsernameAndPassword(username,password);
+        return user != null;
+    }
+    public Boolean userExistByEmail(String email){
+        User user = userRepository.findByEmail(email);
+        return user !=null;
+    }
+    public Boolean userExistByUsername(String username){
+        User user = userRepository.findByUsername(username);
+        return user !=null;
     }
 }
