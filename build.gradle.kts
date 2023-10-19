@@ -18,10 +18,12 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("io.jsonwebtoken:jjwt:0.9.0")
 	implementation ("org.springframework.boot:spring-boot-starter-validation")
 	compileOnly ("org.projectlombok:lombok:1.18.24")
 	annotationProcessor ("org.projectlombok:lombok:1.18.24")
-	runtimeOnly("com.mysql:mysql-connector-j")
+	implementation("com.mysql:mysql-connector-j:8.1.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
