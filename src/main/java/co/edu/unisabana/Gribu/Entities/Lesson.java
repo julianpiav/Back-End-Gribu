@@ -1,6 +1,6 @@
 package co.edu.unisabana.Gribu.Entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.validator.constraints.URL;

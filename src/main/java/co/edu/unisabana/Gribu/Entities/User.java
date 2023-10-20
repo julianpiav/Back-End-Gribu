@@ -1,11 +1,8 @@
 package co.edu.unisabana.Gribu.Entities;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
-
-
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Set;
