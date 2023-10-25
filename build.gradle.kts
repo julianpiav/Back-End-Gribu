@@ -1,6 +1,6 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.1.3"
+	id("org.springframework.boot") version "2.7.4"
 	id("io.spring.dependency-management") version "1.1.3"
 }
 
@@ -21,7 +21,7 @@ dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-validation")
 	compileOnly ("org.projectlombok:lombok:1.18.24")
 	annotationProcessor ("org.projectlombok:lombok:1.18.24")
-	runtimeOnly("com.mysql:mysql-connector-j")
+	implementation("mysql:mysql-connector-java")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
