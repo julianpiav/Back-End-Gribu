@@ -36,7 +36,7 @@ public class UserService{
         }
     }
 
-    public UserDTO getUserByID(Long id) {
+    public UserDTO getUserById(Long id) {
         return userRepository.findById(id)
                 .map(user -> new UserDTO(
                         user.getEmail(),
@@ -48,16 +48,25 @@ public class UserService{
                 )).orElseThrow(()-> new ResourceNotFoundException(
                         "Usuario con el ID "+id+", no encontrado."));
     }
-    public void SaveOrUpdateUser(User user) {
-        if (this.userExistByEmail(user.getEmail())) {
+    public void saveUser(User user) {
+        if (this.existByEmail(user.getEmail())) {
             throw  new ExistingResourceException("El email que intenta utilizar, ya esta en Uso");
-        }else if (this.userExistByUsername(user.getUsername())){
+        }else if (this.existByUsername(user.getUsername())){
             throw  new ExistingResourceException("El Usuario que intenta utilizar, ya esta en Uso");
         }else {
             user.setUserRole(UserRole.USER);
             user.setCreationDate(ZonedDateTime.now());
             user.setUpdateDate(ZonedDateTime.now());
             user.setLevel(1);
+            userRepository.save(user);
+        }
+    }
+    public void updateUser(User user) {
+        if (!this.existByEmail(user.getEmail())) {
+            throw new ResourceNotFoundException("El usuario que intenta modificar no existe");
+        }else {
+            user.setId(findUserByEmail(user.getEmail()).getId());
+            user.setUpdateDate(ZonedDateTime.now());
             userRepository.save(user);
         }
     }
@@ -73,12 +82,15 @@ public class UserService{
         User user= userRepository.findByUsernameAndPassword(username,password);
         return user != null;
     }
-    private Boolean userExistByEmail(String email){
+    private Boolean existByEmail(String email){
         User user = userRepository.findByEmail(email);
         return user !=null;
     }
-    private Boolean userExistByUsername(String username){
+    private Boolean existByUsername(String username){
         User user = userRepository.findByUsername(username);
         return user !=null;
+    }
+    private User findUserByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 }

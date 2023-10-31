@@ -34,8 +34,13 @@ public class LabelController {
 
     @PostMapping(path = "/save")
     public ResponseEntity<String> saveLabel(@RequestBody Label label) {
-        labelService.SaveOrUpdateLabel(label);
+        labelService.saveLabel(label);
         return new ResponseEntity<>("Leccion guardada con Exito", HttpStatus.CREATED);
+    }
+    @PostMapping(path = "/update")
+    public ResponseEntity<String> updateLabel(@RequestBody Label label) {
+        labelService.updateLabel(label);
+        return new ResponseEntity<>("Leccion modificada con Exito", HttpStatus.OK);
     }
 
 

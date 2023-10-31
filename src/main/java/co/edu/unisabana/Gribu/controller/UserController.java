@@ -25,13 +25,18 @@ public class UserController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(userService.getUserByID(id),HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserById(id),HttpStatus.OK);
     }
 
     @PostMapping(path = "/register")
     public ResponseEntity<String> saveUser(@RequestBody User user) {
-        userService.SaveOrUpdateUser(user);
+        userService.saveUser(user);
         return new ResponseEntity<>("Usuario registrado con Exito", HttpStatus.CREATED);
+    }
+    @PutMapping(path = "/update")
+    public ResponseEntity<String> updateUser(@RequestBody User user) {
+        userService.updateUser(user);
+        return new ResponseEntity<>("Usuario modificado con Exito", HttpStatus.OK);
     }
 
     @PostMapping(path = "/login")

@@ -31,11 +31,20 @@ public class LabelService {
         }
 
     }
-    public void SaveOrUpdateLabel(Label label) {
+    public void saveLabel(Label label) {
         if (labelRepository.findAll().isEmpty()) {
             labelRepository.save(label);
         }else if (labelRepository.findByNameIgnoreCase(label.getName())!=null){
             throw new ExistingResourceException("La etiqueta que intenta crear ya existe");
+        }else {
+            labelRepository.save(label);
+        }
+    }
+    public void updateLabel(Label label) {
+        if (labelRepository.findAll().isEmpty()) {
+            throw new ResourceNotFoundException("No hay etiquetas para modificar");
+        }else if (labelRepository.findByNameIgnoreCase(label.getName())!=null){
+            throw new ExistingResourceException("La etiqueta que intenta modificar no existe");
         }else {
             labelRepository.save(label);
         }

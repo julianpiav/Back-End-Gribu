@@ -40,12 +40,20 @@ public class RouteService {
         }
 
     }
-    public void SaveOrUpdateRoute(Route route) {
-
+    public void saveRoute(Route route) {
         if (routeRepository.findAll().isEmpty()) {
             routeRepository.save(route);
         }else if (routeRepository.findByNameIgnoreCase(route.getName())!=null){
             throw new ExistingResourceException("La ruta que intenta crear ya existe");
+        }else {
+            routeRepository.save(route);
+        }
+    }
+    public void updateRoute(Route route) {
+        if (routeRepository.findAll().isEmpty()) {
+            throw new ResourceNotFoundException("No hay rutas para moodificar");
+        }else if (routeRepository.findByNameIgnoreCase(route.getName())==null){
+            throw new ResourceNotFoundException("La ruta que intenta modificar no existe");
         }else {
             routeRepository.save(route);
         }

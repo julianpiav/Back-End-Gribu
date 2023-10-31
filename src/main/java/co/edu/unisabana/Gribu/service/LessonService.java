@@ -46,11 +46,20 @@ public class LessonService {
             return lessonRepository.findById(id);
         }
     }
-    public void SaveOrUpdateLesson(Lesson lesson) {
+    public void saveLesson(Lesson lesson) {
         if (lessonRepository.findAll().isEmpty()) {
             lessonRepository.save(lesson);
         }else if (lessonRepository.findById(lesson.getId()).isPresent()){
             throw new ExistingResourceException("La Leccion que intenta guardar ya existe en la base de datos");
+        }else {
+            lessonRepository.save(lesson);
+        }
+    }
+    public void updateLesson(Lesson lesson) {
+        if (lessonRepository.findAll().isEmpty()) {
+            throw new ResourceNotFoundException("No hay lecciones para modificar");
+        }else if (lessonRepository.findById(lesson.getId()).isEmpty()){
+            throw new ResourceNotFoundException("La Leccion que intenta modificar no existe en la base de datos");
         }else {
             lessonRepository.save(lesson);
         }

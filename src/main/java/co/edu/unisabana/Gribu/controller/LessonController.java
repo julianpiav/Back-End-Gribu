@@ -28,8 +28,13 @@ public class LessonController {
 
     @PostMapping(path = "/save")
     public ResponseEntity<String> saveLesson(@RequestBody Lesson lesson) {
-        lessonService.SaveOrUpdateLesson(lesson);
+        lessonService.saveLesson(lesson);
         return new ResponseEntity<>("Leccion guardada con Exito", HttpStatus.CREATED);
+    }
+    @PutMapping(path = "/update")
+    public ResponseEntity<String> updateLesson(@RequestBody Lesson lesson) {
+        lessonService.updateLesson(lesson);
+        return new ResponseEntity<>("Leccion modificada con Exito", HttpStatus.OK);
     }
 
 
