@@ -38,7 +38,7 @@ public class UserController {
     @PostMapping(path = "/login")
     public ResponseEntity<String> login(@RequestBody User user) {
         if (userService.login(user.getUsername(), user.getPassword())){
-            return new ResponseEntity<>("Inicio de Sesión Exitoso", HttpStatus.OK);
+            return new ResponseEntity<String>("Inicio de Sesión Exitoso", HttpStatus.OK);
         }else {
             throw new AuthenticationException("Inicio de sesion fallido, verifique las credenciales");
         }
