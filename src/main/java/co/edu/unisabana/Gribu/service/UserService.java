@@ -7,6 +7,8 @@ import co.edu.unisabana.Gribu.exception.ResourceNotFoundException;
 import co.edu.unisabana.Gribu.repository.UserRepository;
 import co.edu.unisabana.Gribu.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -17,6 +19,11 @@ import java.util.stream.Collectors;
 public class UserService{
     @Autowired
     UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService() {
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
 
     public List<UserDTO> getUsers() {
         if (userRepository.findAll().isEmpty()){
@@ -49,11 +56,16 @@ public class UserService{
                         "Usuario con el ID "+id+", no encontrado."));
     }
     public void SaveOrUpdateUser(User user) {
+
+
+
         if (this.userExistByEmail(user.getEmail())) {
             throw  new ExistingResourceException("El email que intenta utilizar, ya esta en Uso");
         }else if (this.userExistByUsername(user.getUsername())){
             throw  new ExistingResourceException("El Usuario que intenta utilizar, ya esta en Uso");
         }else {
+            String encodedPassword = this.passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
             user.setUserRole(UserRole.USER);
             user.setCreationDate(ZonedDateTime.now());
             user.setUpdateDate(ZonedDateTime.now());
@@ -81,4 +93,6 @@ public class UserService{
         User user = userRepository.findByUsername(username);
         return user !=null;
     }
+
+
 }
