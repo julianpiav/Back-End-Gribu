@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/v1/users")
+@CrossOrigin(origins = "http://localhost:3000/")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -42,7 +43,7 @@ public class UserController {
     @PostMapping(path = "/login")
     public ResponseEntity<String> login(@RequestBody User user) {
         if (userService.login(user.getUsername(), user.getPassword())){
-            return new ResponseEntity<>("Inicio de Sesión Exitoso", HttpStatus.OK);
+            return new ResponseEntity<String>("Inicio de Sesión Exitoso", HttpStatus.OK);
         }else {
             throw new AuthenticationException("Inicio de sesion fallido, verifique las credenciales");
         }
