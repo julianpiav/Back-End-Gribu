@@ -1,9 +1,11 @@
 package co.edu.unisabana.Gribu.entity;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,7 +23,8 @@ public class Label {
     private String name;
 
     @ManyToMany(mappedBy = "labels")
+    @JsonIgnore
     @ToString.Exclude
-    private List<Lesson> lessons;
+    private Set<Lesson> lessons;
 
 }

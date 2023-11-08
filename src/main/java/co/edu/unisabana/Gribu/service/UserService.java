@@ -49,11 +49,11 @@ public class UserService{
                         "Usuario con el ID "+id+", no encontrado."));
     }
     public void saveUser(User user) {
-        if (this.existByEmail(user.getEmail())) {
-            throw  new ExistingResourceException("El email que intenta utilizar, ya esta en Uso");
-        }else if (this.existByUsername(user.getUsername())){
-            throw  new ExistingResourceException("El Usuario que intenta utilizar, ya esta en Uso");
-        }else {
+        if (this.findByUsername(user.getUsername()) != null) {
+            throw new ExistingResourceException("El usuario que intenta utilizar, ya esta en Uso");
+        } else if (this.findByEmail(user.getEmail()) != null) {
+            throw new ExistingResourceException("El email que intenta utilizar, ya esta en Uso");
+        } else {
             user.setUserRole(UserRole.USER);
             user.setCreationDate(ZonedDateTime.now());
             user.setUpdateDate(ZonedDateTime.now());
@@ -62,10 +62,12 @@ public class UserService{
         }
     }
     public void updateUser(User user) {
-        if (!this.existByEmail(user.getEmail())) {
+        if (this.findByEmail(user.getEmail())==null) {
             throw new ResourceNotFoundException("El usuario que intenta modificar no existe");
         }else {
-            user.setId(findUserByEmail(user.getEmail()).getId());
+            user.setCreationDate(findByEmail(user.getEmail()).getCreationDate());
+            user.setUserRole(findByEmail(user.getEmail()).getUserRole());
+            user.setId(findByEmail(user.getEmail()).getId());
             user.setUpdateDate(ZonedDateTime.now());
             userRepository.save(user);
         }
@@ -82,15 +84,10 @@ public class UserService{
         User user= userRepository.findByUsernameAndPassword(username,password);
         return user != null;
     }
-    private Boolean existByEmail(String email){
-        User user = userRepository.findByEmail(email);
-        return user !=null;
-    }
-    private Boolean existByUsername(String username){
-        User user = userRepository.findByUsername(username);
-        return user !=null;
-    }
-    private User findUserByEmail(String email){
+    private User findByEmail(String email){
         return userRepository.findByEmail(email);
+    }
+    private User findByUsername(String username){
+        return userRepository.findByUsername(username);
     }
 }

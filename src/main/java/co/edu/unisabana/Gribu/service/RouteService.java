@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class RouteService {
@@ -51,8 +52,8 @@ public class RouteService {
     }
     public void updateRoute(Route route) {
         if (routeRepository.findAll().isEmpty()) {
-            throw new ResourceNotFoundException("No hay rutas para moodificar");
-        }else if (routeRepository.findByNameIgnoreCase(route.getName())==null){
+            throw new ResourceNotFoundException("No hay rutas para modificar");
+        }else if (routeRepository.findById(route.getId()).isEmpty()){
             throw new ResourceNotFoundException("La ruta que intenta modificar no existe");
         }else {
             routeRepository.save(route);
@@ -73,7 +74,7 @@ public class RouteService {
             routeRepository.deleteById(id);
         }
     }
-    public List<Lesson> getLessonsByRoute(Route route){
+    public Set<Lesson> getLessonsByRoute(Route route){
         if (routeRepository.findByNameIgnoreCase(route.getName())==null){
             throw new ResourceNotFoundException("La ruta con el nombre= "+route.getName()+", no existe.");
         }else if (route.getLessons().isEmpty()){

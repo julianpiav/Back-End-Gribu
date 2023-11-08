@@ -27,7 +27,7 @@ public class LabelController {
     }
 
     @GetMapping(path = "/name/{name}")
-    public ResponseEntity <Label> getLabelByName(@PathVariable("name") String name) {
+    public ResponseEntity<Label> getLabelByName(@PathVariable("name") String name) {
         return new ResponseEntity<>(labelService.getLabelByName(name), HttpStatus.OK);
     }
 
@@ -35,24 +35,19 @@ public class LabelController {
     @PostMapping(path = "/save")
     public ResponseEntity<String> saveLabel(@RequestBody Label label) {
         labelService.saveLabel(label);
-        return new ResponseEntity<>("Leccion guardada con Exito", HttpStatus.CREATED);
+        return new ResponseEntity<>("Etiqueta guardada con Exito", HttpStatus.CREATED);
     }
-    @PostMapping(path = "/update")
+
+    @PutMapping(path = "/update")
     public ResponseEntity<String> updateLabel(@RequestBody Label label) {
         labelService.updateLabel(label);
-        return new ResponseEntity<>("Leccion modificada con Exito", HttpStatus.OK);
+        return new ResponseEntity<>("Etiqueta modificada con Exito", HttpStatus.OK);
     }
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteLabelById(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteLabelById(@PathVariable("id") Long id) {
         labelService.deleteLabelById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @DeleteMapping("/delete/{name}")
-    public ResponseEntity<Void> deleteLabelByName(@PathVariable("name") String name) {
-        labelService.deleteLabelByName(name);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("La etiqueta con el id= "+id+" ha sido borrada",HttpStatus.OK);
     }
 }

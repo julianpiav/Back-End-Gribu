@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class LabelService {
@@ -74,7 +75,7 @@ public class LabelService {
     }
 
 
-    public List<Lesson> getLessonsByLabel(Label label){
+    public Set<Lesson> getLessonsByLabel(Label label){
         if (labelRepository.findById(label.getId()).isEmpty()){
             throw new ResourceNotFoundException("Etiqueta con el nombre= "+label.getName()+", no existe.");
         }else if (label.getLessons().isEmpty()){
