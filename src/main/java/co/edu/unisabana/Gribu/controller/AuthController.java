@@ -15,7 +15,7 @@ import java.util.Collections;
 
 @RestController
 @AllArgsConstructor
-public class AuthControlller {
+public class AuthController {
 
   private JWTAuthorization jwtAuthorization;
   private UserRepository userRepository;

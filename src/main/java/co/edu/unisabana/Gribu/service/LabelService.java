@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class LabelService {
@@ -31,11 +32,20 @@ public class LabelService {
         }
 
     }
-    public void SaveOrUpdateLabel(Label label) {
+    public void saveLabel(Label label) {
         if (labelRepository.findAll().isEmpty()) {
             labelRepository.save(label);
         }else if (labelRepository.findByNameIgnoreCase(label.getName())!=null){
             throw new ExistingResourceException("La etiqueta que intenta crear ya existe");
+        }else {
+            labelRepository.save(label);
+        }
+    }
+    public void updateLabel(Label label) {
+        if (labelRepository.findAll().isEmpty()) {
+            throw new ResourceNotFoundException("No hay etiquetas para modificar");
+        }else if (labelRepository.findByNameIgnoreCase(label.getName())!=null){
+            throw new ExistingResourceException("La etiqueta que intenta modificar no existe");
         }else {
             labelRepository.save(label);
         }
@@ -65,7 +75,7 @@ public class LabelService {
     }
 
 
-    public List<Lesson> getLessonsByLabel(Label label){
+    public Set<Lesson> getLessonsByLabel(Label label){
         if (labelRepository.findById(label.getId()).isEmpty()){
             throw new ResourceNotFoundException("Etiqueta con el nombre= "+label.getName()+", no existe.");
         }else if (label.getLessons().isEmpty()){

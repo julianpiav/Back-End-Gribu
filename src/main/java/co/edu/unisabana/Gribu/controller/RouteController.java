@@ -32,19 +32,19 @@ public class RouteController {
 
     @PostMapping(path = "/save")
     public ResponseEntity<String> saveRoute(@RequestBody Route route) {
-        routeService.SaveOrUpdateRoute(route);
-        return new ResponseEntity<>("Leccion guardada con Exito", HttpStatus.CREATED);
+        routeService.saveRoute(route);
+        return new ResponseEntity<>("Ruta guardada con Exito", HttpStatus.CREATED);
+    }
+    @PutMapping(path = "/update")
+    public ResponseEntity<String> updateRoute(@RequestBody Route route) {
+        routeService.updateRoute(route);
+        return new ResponseEntity<>("Ruta modificada con Exito", HttpStatus.OK);
     }
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteRouteById(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteRouteById(@PathVariable("id") Long id) {
         routeService.deleteRouteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-    @DeleteMapping("/delete/{name}")
-    public ResponseEntity<Void> deleteRouteByName(@PathVariable("name") String name) {
-        routeService.deleteRouteByName(name);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("La ruta con el id= "+id+" ha sido borrada",HttpStatus.OK);
     }
 }

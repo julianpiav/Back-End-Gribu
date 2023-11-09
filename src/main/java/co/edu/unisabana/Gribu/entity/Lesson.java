@@ -28,7 +28,7 @@ public class Lesson {
     private String name;
 
     @URL
-    private String url_downloadable;
+    private String urlDownloadable;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
@@ -41,7 +41,7 @@ public class Lesson {
             inverseJoinColumns = @JoinColumn(name = "label_id",referencedColumnName = "id")
     )
     @ToString.Exclude
-    private List<Label> labels;
+    private Set<Label> labels;
     @ManyToMany
     @JoinTable(
             name = "lesson_route",
@@ -49,6 +49,6 @@ public class Lesson {
             inverseJoinColumns = @JoinColumn(name = "route_id",referencedColumnName = "id")
     )
     @ToString.Exclude
-    private List<Route> routes;
+    private Set<Route> routes;
 
 }
