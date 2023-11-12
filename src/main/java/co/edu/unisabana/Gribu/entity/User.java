@@ -4,7 +4,9 @@ import lombok.*;
 
 
 import javax.persistence.*;
+import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -33,8 +35,11 @@ public class User {
 
     private int level;
 
-    @Column(name = "day_streak")
-    private int dayStreak;
+    @ElementCollection
+    @CollectionTable(name = "user_logged_days", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "logged_day")
+    @Enumerated(EnumType.STRING)
+    private Set<DayOfWeek> loggedDays = new HashSet<>();
 
     @Column(name = "creation_date",nullable = false)
     private ZonedDateTime creationDate;

@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DayOfWeek;
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -20,13 +22,17 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(path = "/all")
-    public ResponseEntity<List<UserDTO>> getUsers() {
+    public ResponseEntity<List<User>> getUsers() {
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(userService.getUserById(id),HttpStatus.OK);
+    }
+    @GetMapping("/{id}/loggedDays")
+    public ResponseEntity<Set<DayOfWeek>> getLoggedDaysInCurrentWeek(@PathVariable Long id) {
+        return new ResponseEntity<>(userService.getLoggedDaysInCurrentWeek(id),HttpStatus.OK);
     }
 
     @PostMapping(path = "/register")
@@ -41,9 +47,10 @@ public class UserController {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        if (userService.login(user.getUsername(), user.getPassword())){
-            return new ResponseEntity<String>("Inicio de Sesión Exitoso", HttpStatus.OK);
+    public ResponseEntity<String> login(@RequestBody User userLogin) {
+        if (userService.login(userLogin.getUsername(), userLogin.getPassword())!=null){
+            userService.loginDay(userService.login(userLogin.getUsername(), userLogin.getPassword()).getId());
+            return new ResponseEntity<>("Inicio de Sesión Exitoso", HttpStatus.OK);
         }else {
             throw new AuthenticationException("Inicio de sesion fallido, verifique las credenciales");
         }

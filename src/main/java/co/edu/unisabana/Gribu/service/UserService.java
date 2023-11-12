@@ -9,8 +9,12 @@ import co.edu.unisabana.Gribu.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,35 +22,17 @@ public class UserService{
     @Autowired
     UserRepository userRepository;
 
-    public List<UserDTO> getUsers() {
+    public List<User> getUsers() {
         if (userRepository.findAll().isEmpty()){
             throw new ResourceNotFoundException("No se Encontraron Usuarios");
         }else {
-            return userRepository.findAll()
-                    .stream()
-                    .map(user -> new UserDTO(
-                            user.getEmail(),
-                            user.getUsername(),
-                            user.getName(),
-                            user.getLevel(),
-                            user.getDayStreak(),
-                            user.getAlliance()
-                    ))
-                    .collect(Collectors.toList());
+            return userRepository.findAll();
         }
     }
 
-    public UserDTO getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(user -> new UserDTO(
-                        user.getEmail(),
-                        user.getUsername(),
-                        user.getName(),
-                        user.getLevel(),
-                        user.getDayStreak(),
-                        user.getAlliance()
-                )).orElseThrow(()-> new ResourceNotFoundException(
-                        "Usuario con el ID "+id+", no encontrado."));
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow((()-> new ResourceNotFoundException(
+                        "Usuario con el ID "+id+", no encontrado.")));
     }
     public void saveUser(User user) {
         if (this.findByUsername(user.getUsername()) != null) {
@@ -75,15 +61,40 @@ public class UserService{
 
     public void deleteUser(Long id) {
         if (userRepository.findById(id).isEmpty()){
-            throw new ResourceNotFoundException("Usuario con el ID "+id+", no existe.");
+            throw new ResourceNotFoundException("Usuario con el ID "+id+", no existe");
         }else {
             userRepository.deleteById(id);
         }
     }
-    public Boolean login(String username, String password){
-        User user= userRepository.findByUsernameAndPassword(username,password);
-        return user != null;
+    public User login(String username, String password){
+        return userRepository.findByUsernameAndPassword(username,password);
     }
+    public void loginDay(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.getLoggedDays().add(LocalDateTime.now().getDayOfWeek());
+        if (isNewWeek()) {
+            user.getLoggedDays().clear();
+        }
+        userRepository.save(user);
+    }
+
+    public Set<DayOfWeek> getLoggedDaysInCurrentWeek(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        LocalDateTime startOfCurrentWeek = LocalDateTime.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        return user.getLoggedDays().stream()
+                .filter(day -> day.compareTo(startOfCurrentWeek.getDayOfWeek()) >= 0)
+                .collect(Collectors.toSet());
+    }
+
+    private boolean isNewWeek() {
+        LocalDateTime lastLogin = LocalDateTime.now();
+        LocalDateTime startOfLastWeek = lastLogin.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDateTime startOfCurrentWeek = LocalDateTime.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        return startOfLastWeek.isBefore(startOfCurrentWeek);
+    }
+
     private User findByEmail(String email){
         return userRepository.findByEmail(email);
     }
