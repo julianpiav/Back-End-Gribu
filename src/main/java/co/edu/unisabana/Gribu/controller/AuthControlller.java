@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import java.util.Collections;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000/")
 public class AuthControlller {
 
 
@@ -32,11 +34,13 @@ public class AuthControlller {
       if (passwordEncoder.matches(authDTO.getPassword(), user.getPassword())){
         return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("token", user.getPassword() + " pasa xd"));
       }
-      return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("token", user.getUsername() + "ci   " + user.getPassword() + "lega    " + authDTO.getPassword()));
+      return new ResponseEntity<>("Contraseña o usuario no válido", HttpStatus.CONFLICT);
+
+      //return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("token", user.getUsername() + "ci   " + user.getPassword() + "lega    " + authDTO.getPassword()));
       //return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("token", jwtAuthorization.getJWTToken(authDTO.getUsername())));
       //new ResponseEntity<>(jwtAuthorization.getJWTToken(authDTO.getUsername()), HttpStatus.OK);
     } else {
-      return new ResponseEntity<>(jwtAuthorization.getJWTToken("mal xd"), HttpStatus.CONFLICT);
+      return new ResponseEntity<>("Contraseña o usuario no válido", HttpStatus.CONFLICT);
     }
   }
 }
