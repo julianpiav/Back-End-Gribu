@@ -34,6 +34,9 @@ public class User {
     private String password;
 
     private int level;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "avatar", nullable = false)
+    private UserAvatar avatar;
 
     @ElementCollection
     @CollectionTable(name = "user_logged_days", joinColumns = @JoinColumn(name = "user_id"))
@@ -44,10 +47,8 @@ public class User {
     @Column(name = "creation_date",nullable = false)
     private ZonedDateTime creationDate;
 
-    @Column(name = "upadate_date",nullable = false)
+    @Column(name = "update_date",nullable = false)
     private ZonedDateTime updateDate;
-
-    private String alliance;
 
     @Column(name = "user_role",nullable = false)
     private UserRole userRole;
@@ -55,4 +56,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
     private Set<LessonUser> lessonUsers;
+    private Float watchedMinutes;
+    private int watchedLessons;
+
 }

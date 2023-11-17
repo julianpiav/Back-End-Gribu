@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
-@EntityScan("co.edu.unisabana.Gribu.entity")
+@EntityScan("co.edu.unisabana.Gribu")
 public class Gribu {
 
 	public static void main(String[] args) {

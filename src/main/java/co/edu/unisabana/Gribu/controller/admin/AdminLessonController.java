@@ -1,5 +1,6 @@
-package co.edu.unisabana.Gribu.controller;
+package co.edu.unisabana.Gribu.controller.admin;
 
+import co.edu.unisabana.Gribu.entity.Downloadable;
 import co.edu.unisabana.Gribu.entity.Lesson;
 import co.edu.unisabana.Gribu.service.LessonLabelService;
 import co.edu.unisabana.Gribu.service.LessonRouteService;
@@ -9,14 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.SecondaryTable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @RestController
-@RequestMapping(path = "api/v1/lessons")
-public class LessonController {
+@RequestMapping(path = "api/v1/admin/lessons")
+public class AdminLessonController {
     @Autowired
     private LessonService lessonService;
 
@@ -26,9 +26,15 @@ public class LessonController {
     private LessonRouteService lessonRouteService;
 
     @PostMapping("/{lessonId}/addLabel/{labelId}")
-    public ResponseEntity<String> addLabelToLesson(@PathVariable Long lessonId, @PathVariable Long labelId) {
+    public ResponseEntity<String> addDownloadableToLesson(@PathVariable Long lessonId, @PathVariable Long labelId) {
         lessonLabelService.addLabelToLesson(lessonId, labelId);
         return new ResponseEntity<>("La etiqueta con el id= "+labelId+" ha sido agregada a la leccion con el id= "+lessonId,HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/addDownloadable")
+    public ResponseEntity<String> addDownloadableToLesson(@PathVariable Long id, @RequestBody Downloadable downloadable) {
+        lessonService.addDownloadable(id, downloadable);
+        return new ResponseEntity<>("El descargable a sido agregado",HttpStatus.OK);
     }
 
     @PostMapping("/{lessonId}/deleteLabel/{labelId}")
@@ -61,12 +67,13 @@ public class LessonController {
     }
     @GetMapping(path = "/all")
     public ResponseEntity<List<Lesson>> getLessons() {
-        return new ResponseEntity<>(lessonService.getLesson(), HttpStatus.OK);
+        return new ResponseEntity<>(lessonService.getLessons(), HttpStatus.OK);
     }
 
+
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Optional<Lesson>> getLessonById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(lessonService.getLessonByID(id), HttpStatus.OK);
+    public ResponseEntity <Optional<Lesson>> getLessonById(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(lessonService.getLessonById(id), HttpStatus.OK);
     }
 
     @PostMapping(path = "/save")

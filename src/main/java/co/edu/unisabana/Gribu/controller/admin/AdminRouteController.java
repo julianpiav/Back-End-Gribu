@@ -1,4 +1,4 @@
-package co.edu.unisabana.Gribu.controller;
+package co.edu.unisabana.Gribu.controller.admin;
 
 import co.edu.unisabana.Gribu.entity.Route;
 import co.edu.unisabana.Gribu.service.RouteService;
@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "api/v1/routes")
-public class RouteController {
+@RequestMapping(path = "api/v1/admin/routes")
+public class AdminRouteController {
     @Autowired
     private RouteService routeService;
 
@@ -24,10 +24,6 @@ public class RouteController {
     @GetMapping(path = "/id/{id}")
     public ResponseEntity<Optional<Route>> getRouteById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(routeService.getRouteByID(id), HttpStatus.OK);
-    }
-    @GetMapping(path = "/name/{name}")
-    public ResponseEntity <Route> getRouteByName(@PathVariable("name") String name) {
-        return new ResponseEntity<>(routeService.getRouteByName(name), HttpStatus.OK);
     }
 
     @PostMapping(path = "/save")

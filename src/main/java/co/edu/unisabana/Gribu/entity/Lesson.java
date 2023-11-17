@@ -5,7 +5,6 @@ import javax.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
 
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -27,8 +26,11 @@ public class Lesson {
     @Column(nullable = false)
     private String name;
 
-    @URL
-    private String urlDownloadable;
+    private Boolean favorite;
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private Set<Downloadable> downloadableResources;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
@@ -50,5 +52,18 @@ public class Lesson {
     )
     @ToString.Exclude
     private Set<Route> routes;
+
+    @Column(name = "average_Score")
+    private Double averageScore;
+
+
+    public void updateAverageScore() {
+        if (lessonUsers == null || lessonUsers.isEmpty()) {
+            this.averageScore = null;
+        } else {
+            int totalScore = lessonUsers.stream().mapToInt(LessonUser::getScore).sum();
+            this.averageScore = (double) (totalScore / lessonUsers.size());
+        }
+    }
 
 }
