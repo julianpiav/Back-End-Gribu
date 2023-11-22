@@ -28,6 +28,8 @@ public class LessonUser {
     @Column(nullable = false)
     private ZonedDateTime date;
 
+    private Float watchedMinutes;
+
     @Column(name = "score")
     private int score;
 

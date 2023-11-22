@@ -1,4 +1,4 @@
-package co.edu.unisabana.Gribu.controller;
+package co.edu.unisabana.Gribu.controller.admin;
 
 import co.edu.unisabana.Gribu.dto.AuthDTO;
 import co.edu.unisabana.Gribu.entity.User;

@@ -4,7 +4,9 @@ import lombok.*;
 
 
 import javax.persistence.*;
+import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -32,17 +34,21 @@ public class User {
     private String password;
 
     private int level;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "avatar", nullable = false)
+    private UserAvatar avatar;
 
-    @Column(name = "day_streak")
-    private int dayStreak;
+    @ElementCollection
+    @CollectionTable(name = "user_logged_days", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "logged_day")
+    @Enumerated(EnumType.STRING)
+    private Set<DayOfWeek> loggedDays = new HashSet<>();
 
     @Column(name = "creation_date",nullable = false)
     private ZonedDateTime creationDate;
 
-    @Column(name = "upadate_date",nullable = false)
+    @Column(name = "update_date",nullable = false)
     private ZonedDateTime updateDate;
-
-    private String alliance;
 
     @Column(name = "user_role",nullable = false)
     private UserRole userRole;
@@ -50,4 +56,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
     private Set<LessonUser> lessonUsers;
+    private Float watchedMinutes;
+    private int watchedLessons;
+
 }

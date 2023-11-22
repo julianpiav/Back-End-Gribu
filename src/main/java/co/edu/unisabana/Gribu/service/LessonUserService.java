@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Service
 public class LessonUserService {
@@ -23,15 +24,29 @@ public class LessonUserService {
     @Autowired
     private LessonUserRepository lessonUserRepository;
 
-    public LessonUser addLessonToUser(Long lessonId, Long userId, ZonedDateTime date, int score) {
-        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new ResourceNotFoundException("Lesson not found"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public List<LessonUser> getLessonsUsers() {
+        if (lessonUserRepository.findAll().isEmpty()){
+            throw new ResourceNotFoundException("No se encontro que el usuario haya visto lecciones");
+        }else {
+            return lessonUserRepository.findAll();
+        }
+    }
+    public Long addLessonToUser(Long lessonId, Long userId) {
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new ResourceNotFoundException("Leccion con no encontrada"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
         LessonUser lessonUser = new LessonUser();
         lessonUser.setLesson(lesson);
+        user.setWatchedLessons(user.getWatchedLessons()+1);
         lessonUser.setUser(user);
-        lessonUser.setDate(date);
+        lessonUser.setDate(ZonedDateTime.now());
+        lessonUserRepository.save(lessonUser);
+        return lessonUser.getId();
+    }
+
+    public void addScoreToLessonUser(Long lessonUserId, int score) {
+        LessonUser lessonUser = lessonUserRepository.findById(lessonUserId).orElseThrow(() -> new ResourceNotFoundException("LeccionUsuario no encontrada"));
         lessonUser.setScore(score);
-        return lessonUserRepository.save(lessonUser);
+        lessonUserRepository.save(lessonUser);
     }
 }
 

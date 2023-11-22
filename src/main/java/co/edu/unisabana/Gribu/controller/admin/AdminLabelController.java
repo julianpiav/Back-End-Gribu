@@ -1,4 +1,4 @@
-package co.edu.unisabana.Gribu.controller;
+package co.edu.unisabana.Gribu.controller.admin;
 
 import co.edu.unisabana.Gribu.entity.Label;
 import co.edu.unisabana.Gribu.service.LabelService;
@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "api/v1/labels")
-public class LabelController {
+@RequestMapping(path = "api/v1/admin/labels")
+public class AdminLabelController {
     @Autowired
     private LabelService labelService;
 
@@ -24,11 +24,6 @@ public class LabelController {
     @GetMapping(path = "/id/{id}")
     public ResponseEntity<Optional<Label>> getLabelById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(labelService.getLabelById(id), HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/name/{name}")
-    public ResponseEntity<Label> getLabelByName(@PathVariable("name") String name) {
-        return new ResponseEntity<>(labelService.getLabelByName(name), HttpStatus.OK);
     }
 
 

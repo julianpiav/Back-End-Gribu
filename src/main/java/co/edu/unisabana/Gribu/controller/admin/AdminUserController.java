@@ -1,8 +1,6 @@
-package co.edu.unisabana.Gribu.controller;
+package co.edu.unisabana.Gribu.controller.admin;
 
-import co.edu.unisabana.Gribu.dto.UserDTO;
 import co.edu.unisabana.Gribu.entity.User;
-import co.edu.unisabana.Gribu.exception.AuthenticationException;
 import co.edu.unisabana.Gribu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,42 +11,28 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(path = "api/v1/users")
+@RequestMapping(path = "api/v1/admin/users")
 @CrossOrigin(origins = "http://localhost:3000/")
-public class UserController {
+public class AdminUserController {
     @Autowired
     private UserService userService;
 
     @GetMapping(path = "/all")
-    public ResponseEntity<List<UserDTO>> getUsers() {
+    public ResponseEntity<List<User>> getUsers() {
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(userService.getUserById(id),HttpStatus.OK);
     }
 
-    @PostMapping(path = "/register")
-    public ResponseEntity<String> saveUser(@RequestBody User user) {
-        userService.saveUser(user);
-        return new ResponseEntity<>("Usuario registrado con Exito", HttpStatus.CREATED);
-    }
     @PutMapping(path = "/update")
     public ResponseEntity<String> updateUser(@RequestBody User user) {
         userService.updateUser(user);
         return new ResponseEntity<>("Usuario modificado con Exito", HttpStatus.OK);
     }
 
-    @PostMapping(path = "/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        if (userService.login(user.getUsername(), user.getPassword())){
-            return new ResponseEntity<String>("Inicio de Sesión Exitoso", HttpStatus.OK);
-        }else {
-            throw new AuthenticationException("Inicio de sesion fallido, verifique las credenciales");
-        }
-
-    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {

@@ -1,7 +1,9 @@
 package co.edu.unisabana.Gribu.service;
 
-import co.edu.unisabana.Gribu.dto.UserDTO;
+import co.edu.unisabana.Gribu.dto.ForgotPasswordUserDTO;
+import co.edu.unisabana.Gribu.dto.UpdatePasswordUserDTO;
 import co.edu.unisabana.Gribu.entity.UserRole;
+import co.edu.unisabana.Gribu.exception.AuthenticationException;
 import co.edu.unisabana.Gribu.exception.ExistingResourceException;
 import co.edu.unisabana.Gribu.exception.ResourceNotFoundException;
 import co.edu.unisabana.Gribu.repository.UserRepository;
@@ -9,49 +11,34 @@ import co.edu.unisabana.Gribu.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class UserService{
     @Autowired
     UserRepository userRepository;
 
-    public List<UserDTO> getUsers() {
+    public List<User> getUsers() {
         if (userRepository.findAll().isEmpty()){
             throw new ResourceNotFoundException("No se Encontraron Usuarios");
         }else {
-            return userRepository.findAll()
-                    .stream()
-                    .map(user -> new UserDTO(
-                            user.getEmail(),
-                            user.getUsername(),
-                            user.getName(),
-                            user.getLevel(),
-                            user.getDayStreak(),
-                            user.getAlliance()
-                    ))
-                    .collect(Collectors.toList());
+            return userRepository.findAll();
         }
     }
 
-    public UserDTO getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(user -> new UserDTO(
-                        user.getEmail(),
-                        user.getUsername(),
-                        user.getName(),
-                        user.getLevel(),
-                        user.getDayStreak(),
-                        user.getAlliance()
-                )).orElseThrow(()-> new ResourceNotFoundException(
-                        "Usuario con el ID "+id+", no encontrado."));
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow((()-> new ResourceNotFoundException(
+                        "Usuario con el ID "+id+", no encontrado.")));
     }
-    public void saveUser(User user) {
-        if (this.findByUsername(user.getUsername()) != null) {
+    public void registerUser(User user) {
+        if (this.getUserByUsername(user.getUsername()) != null) {
             throw new ExistingResourceException("El usuario que intenta utilizar, ya esta en Uso");
-        } else if (this.findByEmail(user.getEmail()) != null) {
+        } else if (this.getUserByEmail(user.getEmail()) != null) {
             throw new ExistingResourceException("El email que intenta utilizar, ya esta en Uso");
         } else {
             user.setUserRole(UserRole.USER);
@@ -62,32 +49,83 @@ public class UserService{
         }
     }
     public void updateUser(User user) {
-        if (this.findByEmail(user.getEmail())==null) {
+        if (this.getUserById(user.getId())==null) {
             throw new ResourceNotFoundException("El usuario que intenta modificar no existe");
         }else {
-            user.setCreationDate(findByEmail(user.getEmail()).getCreationDate());
-            user.setUserRole(findByEmail(user.getEmail()).getUserRole());
-            user.setId(findByEmail(user.getEmail()).getId());
             user.setUpdateDate(ZonedDateTime.now());
             userRepository.save(user);
+        }
+    }
+    public void updatePassword(UpdatePasswordUserDTO userDTO) {
+        if (this.getUserById(userDTO.id())==null) {
+            throw new ResourceNotFoundException("El usuario que intenta modificar no existe");
+        }else {
+            if (userDTO.newPassword().equals(this.getUserById(userDTO.id()).getPassword())){
+                throw new ExistingResourceException("La nueva contrasena es igual a la contraseña antigua");
+            } else {
+                User user= this.getUserById(userDTO.id());
+                user.setPassword(userDTO.newPassword());
+                user.setUpdateDate(ZonedDateTime.now());
+                userRepository.save(user);
+            }
+        }
+    }
+    public void forgotPassword(ForgotPasswordUserDTO oldUser) {
+        if (this.getUserById(oldUser.id())==null) {
+            throw new ResourceNotFoundException("El usuario que intenta modificar no existe");
+        }else {
+            if (this.existingPassword(oldUser.id(),oldUser.oldPassword())){
+                throw new AuthenticationException("La contrasena actual no coincide");
+            } else if (oldUser.oldPassword().equals(this.getUserById(oldUser.id()).getPassword())){
+                throw new ExistingResourceException("La nueva contrasena es igual a la contraseña antigua");
+            } else {
+                User user= this.getUserById(oldUser.id());
+                user.setPassword(oldUser.newPassword());
+                user.setUpdateDate(ZonedDateTime.now());
+                userRepository.save(user);
+            }
         }
     }
 
     public void deleteUser(Long id) {
         if (userRepository.findById(id).isEmpty()){
-            throw new ResourceNotFoundException("Usuario con el ID "+id+", no existe.");
+            throw new ResourceNotFoundException("Usuario con el ID "+id+", no existe");
         }else {
             userRepository.deleteById(id);
         }
     }
-    public Boolean login(String username, String password){
-        User user= userRepository.findByUsernameAndPassword(username,password);
-        return user != null;
+    public Optional<User> loginId(String username, String password){
+        if (userRepository.findByUsernameAndPassword(username, password)==null){
+            throw new ResourceNotFoundException("Credenciales incorrectas");
+        }else {
+            loginDay(userRepository.findByUsernameAndPassword(username, password).getId());
+            return Optional.ofNullable(userRepository.findByUsernameAndPassword(username, password));
+        }
     }
-    private User findByEmail(String email){
+    private void loginDay(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuraio no encontrado"));
+        user.getLoggedDays().add(LocalDateTime.now().getDayOfWeek());
+        if (isNewWeek()) {
+            user.getLoggedDays().clear();
+        }
+        userRepository.save(user);
+    }
+
+    private boolean isNewWeek() {
+        LocalDateTime lastLogin = LocalDateTime.now();
+        LocalDateTime startOfLastWeek = lastLogin.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDateTime startOfCurrentWeek = LocalDateTime.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        return startOfLastWeek.isBefore(startOfCurrentWeek);
+    }
+
+    private User getUserByEmail(String email){
         return userRepository.findByEmail(email);
     }
-    private User findByUsername(String username){
+    private User getUserByUsername(String username){
         return userRepository.findByUsername(username);
+    }
+    private Boolean existingPassword(long id, String password){
+        return this.getUserById(id).getPassword().equals(password);
     }
 }
