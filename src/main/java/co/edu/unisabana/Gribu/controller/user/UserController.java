@@ -34,15 +34,15 @@ public class UserController {
         userService.registerUser(user);
         return new ResponseEntity<>("Usuario registrado con Exito", HttpStatus.CREATED);
     }
-    @PutMapping(path = "/updatePassword/")
-    public ResponseEntity<String> updateUserPassword(@RequestBody UpdatePasswordUserDTO user) {
-        userService.updatePassword(user);
-        return new ResponseEntity<>("Clave modificada con Exito", HttpStatus.OK);
-    }
-    @PutMapping(path = "/forgotPassword/")
+    @PutMapping(path = "/forgotPassword")
     public ResponseEntity<String> forgotUserPassword(@RequestBody ForgotPasswordUserDTO user) {
         //Email authentication
         userService.forgotPassword(user);
+        return new ResponseEntity<>("Clave modificada con Exito", HttpStatus.OK);
+    }
+    @PutMapping(path = "/updatePassword")
+    public ResponseEntity<String> updateUserPassword(@RequestBody UpdatePasswordUserDTO user) {
+        userService.updatePassword(user);
         return new ResponseEntity<>("Clave modificada con Exito", HttpStatus.OK);
     }
 }

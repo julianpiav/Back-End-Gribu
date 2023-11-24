@@ -20,10 +20,9 @@ public class AdminLessonUserController {
     private LessonService lessonService;
     @Autowired
     private LessonUserService lessonUserService;
-    private LessonDTOMapper lessonDTOMapper;
 
     @GetMapping(path = "/all")
-    public ResponseEntity<List<LessonUser>> getLabels() {
+    public ResponseEntity<List<LessonUser>> getLessonUsers() {
         return new ResponseEntity<>(lessonUserService.getLessonsUsers(), HttpStatus.OK);
     }
 

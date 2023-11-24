@@ -13,11 +13,16 @@ public class LessonUserController {
     private LessonUserService lessonUserService;
 
 
-    @PostMapping(path = "/{userID}/{lessonId}")
-    public ResponseEntity<Long> addLessonToUser(@PathVariable Long userId, @PathVariable Long lessonId) {
-        lessonUserService.addLessonToUser(lessonId,userId);
+    @PostMapping(path = "/{userId}/{lessonId}")
+    public ResponseEntity<Long> userSeeingLesson(@PathVariable Long userId, @PathVariable Long lessonId) {
         return new ResponseEntity<>(lessonUserService.addLessonToUser(lessonId,userId), HttpStatus.OK);
     }
+    @PostMapping(path = "/seen/{lessonUserId}")
+    public ResponseEntity<Void> lessonSeenByUser(@PathVariable Long lessonUserId) {
+        lessonUserService.lessonSeenByUser(lessonUserId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping(path = "/score/{lessonUserId}/{score}")
     public ResponseEntity<String> saveUser(@PathVariable Long LessonUserId,@PathVariable int score) {
         lessonUserService.addScoreToLessonUser(LessonUserId,score);
