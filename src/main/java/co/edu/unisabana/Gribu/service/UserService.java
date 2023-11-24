@@ -56,7 +56,7 @@ public class UserService{
             userRepository.save(user);
         }
     }
-    public void updatePassword(UpdatePasswordUserDTO userDTO) {
+    public void forgotPassword(ForgotPasswordUserDTO userDTO) {
         if (this.getUserById(userDTO.id())==null) {
             throw new ResourceNotFoundException("El usuario que intenta modificar no existe");
         }else {
@@ -70,13 +70,13 @@ public class UserService{
             }
         }
     }
-    public void forgotPassword(ForgotPasswordUserDTO oldUser) {
+    public void updatePassword(UpdatePasswordUserDTO oldUser) {
         if (this.getUserById(oldUser.id())==null) {
             throw new ResourceNotFoundException("El usuario que intenta modificar no existe");
         }else {
-            if (this.existingPassword(oldUser.id(),oldUser.oldPassword())){
-                throw new AuthenticationException("La contrasena actual no coincide");
-            } else if (oldUser.oldPassword().equals(this.getUserById(oldUser.id()).getPassword())){
+            if (!this.existingPassword(oldUser.id(),oldUser.oldPassword())){
+                throw new AuthenticationException("La contrasena antigua no coincide con la actual");
+            } else if (oldUser.newPassword().equals(this.getUserById(oldUser.id()).getPassword())){
                 throw new ExistingResourceException("La nueva contrasena es igual a la contraseña antigua");
             } else {
                 User user= this.getUserById(oldUser.id());

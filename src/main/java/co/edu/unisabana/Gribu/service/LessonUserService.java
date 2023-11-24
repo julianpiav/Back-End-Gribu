@@ -26,7 +26,7 @@ public class LessonUserService {
 
     public List<LessonUser> getLessonsUsers() {
         if (lessonUserRepository.findAll().isEmpty()){
-            throw new ResourceNotFoundException("No se encontro que el usuario haya visto lecciones");
+            throw new ResourceNotFoundException("No se encontro que usuarios hayan visto lecciones");
         }else {
             return lessonUserRepository.findAll();
         }
@@ -45,7 +45,16 @@ public class LessonUserService {
 
     public void addScoreToLessonUser(Long lessonUserId, int score) {
         LessonUser lessonUser = lessonUserRepository.findById(lessonUserId).orElseThrow(() -> new ResourceNotFoundException("LeccionUsuario no encontrada"));
+        if (score>5||score<0){
+            throw new IllegalArgumentException("Puntaje invalido");
+        }
         lessonUser.setScore(score);
+        lessonUserRepository.save(lessonUser);
+    }
+
+    public void lessonSeenByUser(Long lessonUserId) {
+        LessonUser lessonUser = lessonUserRepository.findById(lessonUserId).orElseThrow(() -> new ResourceNotFoundException("LeccionUsuario no encontrada"));
+        lessonUser.setSeen(Boolean.TRUE);
         lessonUserRepository.save(lessonUser);
     }
 }

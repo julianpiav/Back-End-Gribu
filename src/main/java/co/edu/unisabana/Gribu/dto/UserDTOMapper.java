@@ -15,7 +15,10 @@ public class UserDTOMapper implements Function<User, UserDTO> {
                 user.getUsername(),
                 user.getName(),
                 user.getLevel(),
-                user.getLoggedDays()
+                user.getLoggedDays(),
+                user.getAvatar(),
+                user.getWatchedMinutes(),
+                user.getWatchedLessons()
         );
     }
 }

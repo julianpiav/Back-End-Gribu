@@ -33,6 +33,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    private String recoveryToken;
+
     private int level;
     @Enumerated(EnumType.STRING)
     @Column(name = "avatar", nullable = false)

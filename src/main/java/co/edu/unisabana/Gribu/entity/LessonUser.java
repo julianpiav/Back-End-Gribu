@@ -30,6 +30,8 @@ public class LessonUser {
 
     private Float watchedMinutes;
 
+    private Boolean seen;
+
     @Column(name = "score")
     private int score;
 
