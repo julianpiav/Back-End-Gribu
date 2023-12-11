@@ -22,10 +22,10 @@ public class AuthController {
 
   @PostMapping(path = "/auth")
   public ResponseEntity<Object> auth(@RequestBody AuthDTO authDTO) {
-    User user = userRepository.findByUsernameAndPassword(authDTO.getUsername(),
+    User user = userRepository.findByEmailAndPassword(authDTO.getEmail(),
         authDTO.getPassword());
     if (user != null) {
-      return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("token", jwtAuthorization.getJWTToken(authDTO.getUsername()) ));
+      return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("token", jwtAuthorization.getJWTToken(user.getUsername()) ));
       //new ResponseEntity<>(jwtAuthorization.getJWTToken(authDTO.getUsername()), HttpStatus.OK);
     } else {
       return new ResponseEntity<>(jwtAuthorization.getJWTToken("mal xd"), HttpStatus.CONFLICT);

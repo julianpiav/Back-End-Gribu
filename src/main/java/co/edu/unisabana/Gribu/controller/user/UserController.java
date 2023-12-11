@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping(path = "/login")
     public ResponseEntity<Optional<UserDTO>> login(@RequestBody User userLogin) {
-        return new ResponseEntity<>((userService.loginId(userLogin.getUsername(), userLogin.getPassword()))
+        return new ResponseEntity<>((userService.loginId(userLogin.getEmail(), userLogin.getPassword()))
                 .map(userDTOMapper), HttpStatus.OK);
     }
 
