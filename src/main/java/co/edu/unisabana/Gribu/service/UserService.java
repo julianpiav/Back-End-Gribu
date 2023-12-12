@@ -94,7 +94,7 @@ public class UserService{
             userRepository.deleteById(id);
         }
     }
-    public Optional<User> loginId(String email, String password){
+    public Optional<User> login(String email, String password){
         if (userRepository.findByEmailAndPassword(email, password)==null){
             throw new ResourceNotFoundException("Credenciales incorrectas");
         }else {

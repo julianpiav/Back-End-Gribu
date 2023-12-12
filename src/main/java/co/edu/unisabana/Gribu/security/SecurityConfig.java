@@ -21,10 +21,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
 
     http.csrf().disable()
-        .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-        .authorizeRequests()
-            .antMatchers("/api/v1/user/login").authenticated()
-            .antMatchers("/**").permitAll();
+            .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+            .authorizeRequests()
+            .antMatchers("/api/v1/user/login").permitAll()
+            .antMatchers("/**").authenticated();
   }
 
   @Bean

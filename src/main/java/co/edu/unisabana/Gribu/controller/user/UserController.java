@@ -1,9 +1,6 @@
 package co.edu.unisabana.Gribu.controller.user;
 
-import co.edu.unisabana.Gribu.dto.ForgotPasswordUserDTO;
-import co.edu.unisabana.Gribu.dto.UpdatePasswordUserDTO;
-import co.edu.unisabana.Gribu.dto.UserDTO;
-import co.edu.unisabana.Gribu.dto.UserDTOMapper;
+import co.edu.unisabana.Gribu.dto.*;
 import co.edu.unisabana.Gribu.entity.User;
 import co.edu.unisabana.Gribu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +21,8 @@ public class UserController {
     private UserDTOMapper userDTOMapper;
 
     @PostMapping(path = "/login")
-    public ResponseEntity<Optional<UserDTO>> login(@RequestBody User userLogin) {
-        return new ResponseEntity<>((userService.loginId(userLogin.getEmail(), userLogin.getPassword()))
+    public ResponseEntity<Optional<UserDTO>> login(@RequestBody UserLoginDTO userLogin) {
+        return new ResponseEntity<>((userService.login(userLogin.email(), userLogin.password()))
                 .map(userDTOMapper), HttpStatus.OK);
     }
 
