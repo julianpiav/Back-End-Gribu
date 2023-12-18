@@ -24,6 +24,7 @@ dependencies {
 	compileOnly ("org.projectlombok:lombok:1.18.24")
 	annotationProcessor ("org.projectlombok:lombok:1.18.24")
 	implementation("com.mysql:mysql-connector-j:8.1.0")
+	implementation ("com.sendinblue:sib-api-v3-sdk:7.0.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

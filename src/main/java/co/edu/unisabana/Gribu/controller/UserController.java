@@ -35,6 +35,19 @@ public class UserController {
         return new ResponseEntity<>("Usuario registrado con Exito", HttpStatus.CREATED);
     }
 
+    @PostMapping(path = "/changePassword/{email}")
+    public ResponseEntity<String> changePassword(@PathVariable("email") String email) {
+        userService.sendPasswordChange(email);
+        return new ResponseEntity<>("Entre rey", HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "/codeChangePassword/{email}/{code}")
+    public ResponseEntity<String> codeChangePassword(@PathVariable("email") String email, @PathVariable("code") String code) {
+        userService.confirmCodePasswordChange(email,code);
+        return new ResponseEntity<>("Correo enviado", HttpStatus.CREATED);
+    }
+
+
     @PostMapping(path = "/login")
     public ResponseEntity<String> login(@RequestBody User user) {
         if (userService.login(user.getUsername(), user.getPassword())){

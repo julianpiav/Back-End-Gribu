@@ -20,9 +20,11 @@ public class UserService{
     @Autowired
     UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
 
     public UserService() {
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.mailService = new MailService();
     }
 
     public List<UserDTO> getUsers() {
@@ -56,15 +58,14 @@ public class UserService{
                         "Usuario con el ID "+id+", no encontrado."));
     }
     public void SaveOrUpdateUser(User user) {
-
-
-
         if (this.userExistByEmail(user.getEmail())) {
             throw  new ExistingResourceException("El email que intenta utilizar, ya esta en Uso");
         }else if (this.userExistByUsername(user.getUsername())){
             throw  new ExistingResourceException("El Usuario que intenta utilizar, ya esta en Uso");
         }else {
+            this.mailService.sendEmailConfirmation(user.getEmail(), user.getName());
             String encodedPassword = this.passwordEncoder.encode(user.getPassword());
+            user.setAlliance(this.passwordEncoder.encode("123456"));
             user.setPassword(encodedPassword);
             user.setUserRole(UserRole.USER);
             user.setCreationDate(ZonedDateTime.now());
@@ -72,6 +73,20 @@ public class UserService{
             user.setLevel(1);
             userRepository.save(user);
         }
+    }
+
+    public void sendPasswordChange(String email){
+        this.mailService.sendEmailPasswordChange(email);
+    }
+
+    public void confirmCodePasswordChange(String email, String code){
+        User foundUser = this.userRepository.findByEmail(email);
+        if (this.passwordEncoder.matches(code, foundUser.getAlliance())){
+            this.mailService.sendEmailPasswordChangeConfirm(email);
+        } else {
+            throw new ResourceNotFoundException("Usuario con el ID , no existe.");
+        }
+
     }
 
     public void deleteUser(Long id) {
