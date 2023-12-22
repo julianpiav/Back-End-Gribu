@@ -19,18 +19,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    /*
-    http.csrf().disable()
-        .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-        .authorizeRequests()
-        .antMatchers(HttpMethod.POST, "/auth").permitAll()
-        .anyRequest().authenticated();
-      */
 
-    http
-            .csrf().disable()
+    http.csrf().disable()
+            .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
-            .antMatchers("/**").permitAll();
+            .antMatchers("/api/v1/user/login", "/api/v1/user/register","/api/v1/user/forgotPassword").permitAll()
+            .antMatchers("/**").authenticated();
   }
 
   @Bean
@@ -47,5 +41,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 }
 //documentar la API con swagger
-//No se documento a menos de que sea una libreria o una bibloteca,
+//No se documenta a menos de que sea una libreria o una bibloteca,
 //Sino es una libreria/bibloteca y hay que documentarlo es porque quedo mal hecho.

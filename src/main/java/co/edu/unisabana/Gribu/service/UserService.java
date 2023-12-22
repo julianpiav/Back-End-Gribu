@@ -94,12 +94,12 @@ public class UserService{
             userRepository.deleteById(id);
         }
     }
-    public Optional<User> loginId(String username, String password){
-        if (userRepository.findByUsernameAndPassword(username, password)==null){
+    public Optional<User> login(String email, String password){
+        if (userRepository.findByEmailAndPassword(email, password)==null){
             throw new ResourceNotFoundException("Credenciales incorrectas");
         }else {
-            loginDay(userRepository.findByUsernameAndPassword(username, password).getId());
-            return Optional.ofNullable(userRepository.findByUsernameAndPassword(username, password));
+            loginDay(userRepository.findByEmailAndPassword(email, password).getId());
+            return Optional.ofNullable(userRepository.findByEmailAndPassword(email, password));
         }
     }
     private void loginDay(Long id) {

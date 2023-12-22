@@ -10,7 +10,8 @@ public record UserDTO (
         String username,
         String name,
         Integer level,
-        Set<DayOfWeek> loggedDays
+        Set<DayOfWeek> loggedDays,
+        String token
 ){
 
 }
